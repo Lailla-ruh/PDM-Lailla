@@ -8,7 +8,7 @@ def get_base64_image(path):
     with open(path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
-img_base64 = get_base64_image("vivara.jpg")
+img_base64 = get_base64_image("vivaralogo.jpg")
 zap_base64 = get_base64_image("zaplogo.jpg")
 
 # TOPO (imagem clicável)
