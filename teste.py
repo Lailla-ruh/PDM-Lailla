@@ -2,7 +2,7 @@ import streamlit as st
 
 st.image("fotolailla.jpeg")
 st.write("Site Lailla")
-st.link_button("Acessar", "https://sites.google.com/d/19rZhooAY66aV-K0EKjCHUDInYhGcLZdV/p/1RbMTpxwYMKlFabiPhgpLbYpQQL6Rrco1/edit")
+st.link_button("Acessar", "https://sites.google.com/d/19rZhooAY66aV-K0EKjCHUDInYhGcLZdV/p/1RbMTpxwYMKlFabiPhgpLbYpQQL6Rrco1/edi")
 import streamlit as st
 import base64
 # CONFIG
@@ -13,8 +13,8 @@ def get_base64_image(path):
     with open(path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
-img_base64 = get_base64_image("logo coke.png")
-zap_base64 = get_base64_image("zap.avif")
+img_base64 = get_base64_image("vivara.jpg")
+zap_base64 = get_base64_image("zaplogo.jpg")
 
 # TOPO (imagem clicável)
 col1, col2, col3 = st.columns([1,2,1])
@@ -22,7 +22,7 @@ col1, col2, col3 = st.columns([1,2,1])
 with col2:
     st.markdown(f"""
         <div style="text-align: center; margin-bottom: 50px;">
-            <a href="https://www.coca-cola.com/br/pt" target="_blank">
+            <a href="https://www.vivara.com.br/" target="_blank">
                 <img src="data:image/png;base64,{img_base64}"
                      width="320"
                      style="border-radius:12px;">
@@ -51,7 +51,7 @@ with col_left:
         ">
         """, unsafe_allow_html=True)
 
-        st.image("Cerejeira.png", width=800)
+        st.image("fotolailla.jpeg", width=800)
 
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -78,7 +78,7 @@ with col_right:
 
 st.markdown(f"""
     <div style="text-align: center; margin-top: 10px;">
-        <a href="https://wa.me/+55883981954690" target="_blank">
+        <a href="https://wa.me/+55883986496503" target="_blank">
             <img src="data:image/avif;base64,{zap_base64}" width="100">
         </a>
     </div>
