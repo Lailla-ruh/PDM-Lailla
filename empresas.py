@@ -48,7 +48,7 @@ with col2:
 # EMPRESA 3
 # =========================================
 with col3:
-    st.image("empresa3.png", use_container_width=True)
+    st.image("empresa3.jpg", use_container_width=True)
     st.subheader("HBO")
     st.write("HBO é uma famosa rede de TV paga americana e um serviço global de streaming de propriedade da Warner Bros. Discovery.")
     st.link_button(
