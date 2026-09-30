@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import os
+from textwrap import dedent
 
 # === CONFIGURAÇÃO DA PÁGINA ===
 st.set_page_config(
@@ -95,7 +96,12 @@ html, body, [class*="css"] {
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(14,28,38,0.97) 0%, rgba(14,28,38,0.86) 45%, rgba(14,28,38,0.18) 100%);
+    background: linear-gradient(
+        90deg,
+        rgba(14,28,38,0.97) 0%,
+        rgba(14,28,38,0.86) 45%,
+        rgba(14,28,38,0.18) 100%
+    );
 }
 
 .hero-content {
@@ -236,8 +242,13 @@ div[data-testid="stFormSubmitButton"] > button {
 </style>
 """, unsafe_allow_html=True)
 
-# === FUNÇÕES ===
+
+# ============================================================
+# FUNÇÕES
+# ============================================================
+
 def carregar_dados():
+
     colunas = [
         "Nome",
         "CPF_CNPJ",
@@ -250,25 +261,34 @@ def carregar_dados():
     ]
 
     if os.path.exists(ARQUIVO):
+
         try:
+
             dados = pd.read_csv(
                 ARQUIVO,
                 encoding="utf-8-sig"
             )
 
             for coluna in colunas:
+
                 if coluna not in dados.columns:
                     dados[coluna] = ""
 
             return dados[colunas]
 
         except Exception:
-            return pd.DataFrame(columns=colunas)
 
-    return pd.DataFrame(columns=colunas)
+            return pd.DataFrame(
+                columns=colunas
+            )
+
+    return pd.DataFrame(
+        columns=colunas
+    )
 
 
 def salvar_dados(dados):
+
     dados.to_csv(
         ARQUIVO,
         index=False,
@@ -276,7 +296,10 @@ def salvar_dados(dados):
     )
 
 
-# === CARREGAR DADOS ===
+# ============================================================
+# CARREGAR DADOS
+# ============================================================
+
 df = carregar_dados()
 
 colunas_necessarias = [
@@ -291,15 +314,27 @@ colunas_necessarias = [
 ]
 
 for coluna in colunas_necessarias:
+
     if coluna not in df.columns:
         df[coluna] = ""
 
 
-# === SIDEBAR ===
-st.sidebar.markdown("""
-<div class="logo-title">TechClientes</div>
-<div class="logo-subtitle">GESTÃO DE CLIENTES</div>
-""", unsafe_allow_html=True)
+# ============================================================
+# SIDEBAR
+# ============================================================
+
+st.sidebar.markdown(
+    dedent("""
+    <div class="logo-title">
+        TechClientes
+    </div>
+
+    <div class="logo-subtitle">
+        GESTÃO DE CLIENTES
+    </div>
+    """),
+    unsafe_allow_html=True
+)
 
 st.sidebar.markdown("<br>", unsafe_allow_html=True)
 
@@ -313,72 +348,87 @@ menu = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
-st.sidebar.caption("TechClientes PRO 2026")
+
+st.sidebar.caption(
+    "TechClientes PRO 2026"
+)
 
 
-# === DASHBOARD ===
+# ============================================================
+# DASHBOARD
+# ============================================================
+
 if menu == "Dashboard":
 
+    # HERO
     st.markdown(
-        f"""
-<div class="hero-container"
-     style="background-image: url('{IMAGEM_HERO}');">
+        dedent(f"""
+        <div class="hero-container"
+             style="background-image: url('{IMAGEM_HERO}');">
 
-    <div class="hero-overlay"></div>
+            <div class="hero-overlay"></div>
 
-    <div class="hero-content">
+            <div class="hero-content">
 
-        <div class="hero-number">
-            01.
+                <div class="hero-number">
+                    01.
+                </div>
+
+                <div class="hero-title">
+                    Seus clientes.<br>
+                    Total controle.
+                </div>
+
+                <div class="hero-text">
+                    Gerencie todos os seus clientes em um só lugar.<br>
+                    Cadastre, consulte e acompanhe sua base de clientes
+                    de forma ágil e profissional.
+                </div>
+
+                <div class="hero-badge">
+                    GESTÃO INTELIGENTE
+                </div>
+
+            </div>
+
         </div>
-
-        <div class="hero-title">
-            Seus clientes.<br>
-            Total controle.
-        </div>
-
-        <div class="hero-text">
-            Gerencie todos os seus clientes em um só lugar.<br>
-            Cadastre, consulte e acompanhe sua base de clientes
-            de forma ágil e profissional.
-        </div>
-
-        <div class="hero-badge">
-            GESTÃO INTELIGENTE
-        </div>
-
-    </div>
-
-</div>
-""",
+        """),
         unsafe_allow_html=True
     )
 
+    # TÍTULO
     st.markdown(
-        """
-<div class="page-title">
-    Visão geral dos clientes
-</div>
+        dedent("""
+        <div class="page-title">
+            Visão geral dos clientes
+        </div>
 
-<div class="page-subtitle">
-    Acompanhe sua base de clientes e mantenha os cadastros atualizados.
-</div>
-""",
+        <div class="page-subtitle">
+            Acompanhe sua base de clientes e mantenha os cadastros atualizados.
+        </div>
+        """),
         unsafe_allow_html=True
     )
 
+    # INDICADORES
     total_clientes = len(df)
 
     clientes_pf = len(
         df[
-            df["Tipo"].astype(str).str.upper()
+            df["Tipo"]
+            .astype(str)
+            .str.strip()
+            .str.upper()
             == "PESSOA FÍSICA"
         ]
     )
 
     clientes_pj = len(
         df[
-            df["Tipo"].astype(str).str.upper()
+            df["Tipo"]
+            .astype(str)
+            .str.strip()
+            .str.upper()
             == "PESSOA JURÍDICA"
         ]
     )
@@ -388,88 +438,94 @@ if menu == "Dashboard":
     with col1:
 
         st.markdown(
-            f"""
-<div class="info-card">
+            dedent(f"""
+            <div class="info-card">
 
-    <div class="card-number">
-        {total_clientes}
-    </div>
+                <div class="card-number">
+                    {total_clientes}
+                </div>
 
-    <div class="card-label">
-        CLIENTES CADASTRADOS
-    </div>
+                <div class="card-label">
+                    CLIENTES CADASTRADOS
+                </div>
 
-</div>
-""",
+            </div>
+            """),
             unsafe_allow_html=True
         )
 
     with col2:
 
         st.markdown(
-            f"""
-<div class="info-card">
+            dedent(f"""
+            <div class="info-card">
 
-    <div class="card-number">
-        {clientes_pf}
-    </div>
+                <div class="card-number">
+                    {clientes_pf}
+                </div>
 
-    <div class="card-label">
-        PESSOAS FÍSICAS
-    </div>
+                <div class="card-label">
+                    PESSOAS FÍSICAS
+                </div>
 
-</div>
-""",
+            </div>
+            """),
             unsafe_allow_html=True
         )
 
     with col3:
 
         st.markdown(
-            f"""
-<div class="info-card">
+            dedent(f"""
+            <div class="info-card">
 
-    <div class="card-number">
-        {clientes_pj}
-    </div>
+                <div class="card-number">
+                    {clientes_pj}
+                </div>
 
-    <div class="card-label">
-        PESSOAS JURÍDICAS
-    </div>
+                <div class="card-label">
+                    PESSOAS JURÍDICAS
+                </div>
 
-</div>
-""",
+            </div>
+            """),
             unsafe_allow_html=True
         )
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    # ÁREA INFORMATIVA
+    st.markdown(
+        "<br>",
+        unsafe_allow_html=True
+    )
 
-    coluna1, coluna2 = st.columns([1.1, 1])
+    coluna1, coluna2 = st.columns(
+        [1.1, 1]
+    )
 
     with coluna1:
 
         st.markdown(
-            """
-<div class="dark-card">
+            dedent("""
+            <div class="dark-card">
 
-    <h2>
-        Gestão Profissional
-    </h2>
+                <h2>
+                    Gestão Profissional
+                </h2>
 
-    <p>
-        O TechClientes PRO permite manter
-        todos os clientes organizados e
-        cadastrados em um só lugar.
-    </p>
+                <p>
+                    O TechClientes PRO permite manter
+                    todos os clientes organizados e
+                    cadastrados em um só lugar.
+                </p>
 
-    <p>
-        Monitore nomes, documentos, telefones,
-        e-mails e endereços com facilidade
-        através de uma interface limpa.
-    </p>
+                <p>
+                    Monitore nomes, documentos, telefones,
+                    e-mails e endereços com facilidade
+                    através de uma interface limpa.
+                </p>
 
-</div>
-""",
+            </div>
+            """),
             unsafe_allow_html=True
         )
 
@@ -481,19 +537,22 @@ if menu == "Dashboard":
         )
 
 
-# === CADASTRAR CLIENTE ===
+# ============================================================
+# CADASTRAR CLIENTE
+# ============================================================
+
 elif menu == "+ Cadastrar Cliente":
 
     st.markdown(
-        """
-<div class="page-title">
-    Novo Cliente
-</div>
+        dedent("""
+        <div class="page-title">
+            Novo Cliente
+        </div>
 
-<div class="page-subtitle">
-    Adicione um novo cliente à sua base de dados.
-</div>
-""",
+        <div class="page-subtitle">
+            Adicione um novo cliente à sua base de dados.
+        </div>
+        """),
         unsafe_allow_html=True
     )
 
@@ -592,39 +651,42 @@ elif menu == "+ Cadastrar Cliente":
                 )
 
 
-# === CLIENTES CADASTRADOS ===
+# ============================================================
+# CLIENTES CADASTRADOS
+# ============================================================
+
 elif menu == "Clientes Cadastrados":
 
     st.markdown(
-        """
-<div class="page-title">
-    Clientes Cadastrados
-</div>
+        dedent("""
+        <div class="page-title">
+            Clientes Cadastrados
+        </div>
 
-<div class="page-subtitle">
-    Consulte e pesquise todos os clientes cadastrados.
-</div>
-""",
+        <div class="page-subtitle">
+            Consulte e pesquise todos os clientes cadastrados.
+        </div>
+        """),
         unsafe_allow_html=True
     )
 
     if df.empty:
 
         st.markdown(
-            """
-<div class="dark-card">
+            dedent("""
+            <div class="dark-card">
 
-    <h2>
-        Nenhum cliente cadastrado
-    </h2>
+                <h2>
+                    Nenhum cliente cadastrado
+                </h2>
 
-    <p>
-        Sua base de clientes ainda está vazia.
-        Cadastre seu primeiro cliente para começar.
-    </p>
+                <p>
+                    Sua base de clientes ainda está vazia.
+                    Cadastre seu primeiro cliente para começar.
+                </p>
 
-</div>
-""",
+            </div>
+            """),
             unsafe_allow_html=True
         )
 
@@ -679,8 +741,8 @@ elif menu == "Clientes Cadastrados":
             options=opcoes_clientes,
 
             format_func=lambda indice:
-                f"{df.loc[indice, 'Nome']} "
-                f"- CPF/CNPJ: "
+                f"{df.loc[indice, 'Nome']} - "
+                f"CPF/CNPJ: "
                 f"{df.loc[indice, 'CPF_CNPJ']}"
         )
 
@@ -703,16 +765,18 @@ elif menu == "Clientes Cadastrados":
             st.rerun()
 
 
-# === RODAPÉ ===
+# ============================================================
+# RODAPÉ
+# ============================================================
+
 st.markdown(
-    """
-<div class="footer">
+    dedent("""
+    <div class="footer">
 
-    TechClientes PRO<br>
+        TechClientes PRO<br>
+        Gestão inteligente de clientes
 
-    Gestão inteligente de clientes
-
-</div>
-""",
+    </div>
+    """),
     unsafe_allow_html=True
 )
