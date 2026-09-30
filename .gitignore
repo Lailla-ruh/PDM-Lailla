@@ -10,4 +10,4 @@ __pycache__/
 .DS_Store
 
 # Dados locais gerados pelo app
-imoveis.csv
+clientes.csv
