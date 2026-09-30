@@ -2,31 +2,42 @@ import streamlit as st
 import pandas as pd
 import os
 
-# === CONFIGURAÇÃO DA PÁGINA ===
+# ============================================================
+# CONFIGURAÇÃO DA PÁGINA
+# ============================================================
+
 st.set_page_config(
-    page_title="TechInventário PRO",
-    page_icon="💻",
+    page_title="TechClientes PRO",
+    page_icon="👥",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-ARQUIVO = "equipamentos.csv"
+ARQUIVO = "clientes.csv"
 
-# === IMAGENS ===
+# ============================================================
+# IMAGENS
+# ============================================================
+
 IMAGEM_HERO = (
     "https://images.unsplash.com/"
-    "photo-1518770660439-4636190af475"
+    "photo-1556761175-b413da4baf72"
     "?auto=format&fit=crop&w=1800&q=90"
 )
-IMAGEM_FROTA = (
+
+IMAGEM_CLIENTES = (
     "https://images.unsplash.com/"
-    "photo-1531297484001-80022131f5a1"
+    "photo-1521737711867-e3b97375f902"
     "?auto=format&fit=crop&w=1200&q=85"
 )
 
-# === CSS ===
+# ============================================================
+# CSS
+# ============================================================
+
 st.markdown("""
 <style>
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
 
 html, body, [class*="css"] {
@@ -34,7 +45,12 @@ html, body, [class*="css"] {
 }
 
 .stApp {
-    background: linear-gradient(135deg, #F0F0E5 0%, #E1E4C8 50%, #D4DCB5 100%);
+    background: linear-gradient(
+        135deg,
+        #F0F0E5 0%,
+        #E1E4C8 50%,
+        #D4DCB5 100%
+    );
 }
 
 .block-container {
@@ -43,8 +59,14 @@ html, body, [class*="css"] {
     padding-bottom: 3rem;
 }
 
+/* SIDEBAR */
+
 [data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #162630, #223944);
+    background: linear-gradient(
+        180deg,
+        #162630,
+        #223944
+    );
     border-right: 2px solid #77864B;
 }
 
@@ -66,6 +88,8 @@ html, body, [class*="css"] {
     letter-spacing: 1px;
 }
 
+/* TÍTULOS */
+
 .page-title {
     font-size: 38px;
     font-weight: 800;
@@ -78,6 +102,8 @@ html, body, [class*="css"] {
     color: #46513B !important;
     margin-bottom: 30px;
 }
+
+/* HERO */
 
 .hero-container {
     position: relative;
@@ -94,7 +120,13 @@ html, body, [class*="css"] {
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(14,28,38,0.97) 0%, rgba(14,28,38,0.86) 45%, rgba(14,28,38,0.18) 100%);
+    background:
+        linear-gradient(
+            90deg,
+            rgba(14,28,38,0.97) 0%,
+            rgba(14,28,38,0.86) 45%,
+            rgba(14,28,38,0.18) 100%
+        );
 }
 
 .hero-content {
@@ -138,6 +170,8 @@ html, body, [class*="css"] {
     font-weight: 700;
 }
 
+/* CARDS */
+
 .info-card {
     background: #FFFFFF;
     border-radius: 22px;
@@ -161,8 +195,14 @@ html, body, [class*="css"] {
     margin-top: 5px;
 }
 
+/* CARD ESCURA */
+
 .dark-card {
-    background: linear-gradient(135deg, #152631, #233C48);
+    background: linear-gradient(
+        135deg,
+        #152631,
+        #233C48
+    );
     border-radius: 24px;
     padding: 30px;
     box-shadow: 0 12px 30px rgba(0,0,0,0.16);
@@ -178,6 +218,8 @@ html, body, [class*="css"] {
     line-height: 1.7;
 }
 
+/* FORMULÁRIO */
+
 [data-testid="stForm"] {
     background: rgba(255,255,255,0.85);
     padding: 30px;
@@ -186,13 +228,19 @@ html, body, [class*="css"] {
     box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
-[data-testid="stWidgetLabel"] label, .stTextInput label, .stNumberInput label, .stSelectbox label, .stTextArea label {
+[data-testid="stWidgetLabel"] label,
+.stTextInput label,
+.stNumberInput label,
+.stSelectbox label,
+.stTextArea label {
     color: #26311F !important;
     font-size: 15px !important;
     font-weight: 700 !important;
 }
 
-.stTextInput input, .stNumberInput input, .stTextArea textarea {
+.stTextInput input,
+.stNumberInput input,
+.stTextArea textarea {
     background-color: #FFFFFF !important;
     color: #202820 !important;
     border: 2px solid #7C8956 !important;
@@ -210,8 +258,16 @@ html, body, [class*="css"] {
     color: #FFFFFF !important;
 }
 
-.stButton > button, div[data-testid="stFormSubmitButton"] > button {
-    background: linear-gradient(135deg, #52632D, #788B48) !important;
+/* BOTÕES */
+
+.stButton > button,
+div[data-testid="stFormSubmitButton"] > button {
+    background: linear-gradient(
+        135deg,
+        #52632D,
+        #788B48
+    ) !important;
+
     color: #FFFFFF !important;
     border: none !important;
     border-radius: 14px !important;
@@ -220,6 +276,8 @@ html, body, [class*="css"] {
     box-shadow: 0 8px 18px rgba(82,99,45,0.25);
 }
 
+/* FOOTER */
+
 .footer {
     margin-top: 50px;
     text-align: center;
@@ -227,190 +285,502 @@ html, body, [class*="css"] {
     font-size: 14px;
     font-weight: 600;
 }
+
 </style>
 """, unsafe_allow_html=True)
 
-# === FUNÇÕES ===
+# ============================================================
+# FUNÇÕES
+# ============================================================
+
 def carregar_dados():
-    colunas = ["Fabricante", "Modelo", "Ano", "Categoria", "Patrimonio", "Quantidade", "Valor", "Observacoes"]
+
+    colunas = [
+        "Nome",
+        "CPF_CNPJ",
+        "Telefone",
+        "Email",
+        "Cidade",
+        "Endereco",
+        "Tipo",
+        "Observacoes"
+    ]
+
     if os.path.exists(ARQUIVO):
+
         try:
             dados = pd.read_csv(ARQUIVO)
-            return dados
+
+            for coluna in colunas:
+                if coluna not in dados.columns:
+                    dados[coluna] = ""
+
+            return dados[colunas]
+
         except Exception:
             return pd.DataFrame(columns=colunas)
+
     return pd.DataFrame(columns=colunas)
 
-def salvar_dados(dados):
-    dados.to_csv(ARQUIVO, index=False)
 
+def salvar_dados(dados):
+    dados.to_csv(
+        ARQUIVO,
+        index=False,
+        encoding="utf-8-sig"
+    )
+
+
+# ============================================================
 # CARREGAR DADOS
+# ============================================================
+
 df = carregar_dados()
-colunas_necessarias = ["Fabricante", "Modelo", "Ano", "Categoria", "Patrimonio", "Quantidade", "Valor", "Observacoes"]
+
+colunas_necessarias = [
+    "Nome",
+    "CPF_CNPJ",
+    "Telefone",
+    "Email",
+    "Cidade",
+    "Endereco",
+    "Tipo",
+    "Observacoes"
+]
+
 for coluna in colunas_necessarias:
+
     if coluna not in df.columns:
         df[coluna] = ""
 
-df["Valor"] = pd.to_numeric(df["Valor"], errors="coerce").fillna(0)
-df["Quantidade"] = pd.to_numeric(df["Quantidade"], errors="coerce").fillna(0)
 
-# === SIDEBAR ===
+# ============================================================
+# SIDEBAR
+# ============================================================
+
 st.sidebar.markdown("""
-    <div class="logo-title">TechInventário</div>
-    <div class="logo-subtitle">GESTÃO DE ATIVOS E EQUIPAMENTOS</div>
+    <div class="logo-title">
+        TechClientes
+    </div>
+
+    <div class="logo-subtitle">
+        GESTÃO DE CLIENTES
+    </div>
 """, unsafe_allow_html=True)
 
 st.sidebar.markdown("<br>", unsafe_allow_html=True)
-menu = st.sidebar.radio("NAVEGAÇÃO", ["Dashboard", "+ Cadastrar Item", "Itens Cadastrados"])
+
+menu = st.sidebar.radio(
+    "NAVEGAÇÃO",
+    [
+        "Dashboard",
+        "+ Cadastrar Cliente",
+        "Clientes Cadastrados"
+    ]
+)
 
 st.sidebar.markdown("---")
-st.sidebar.caption("TechInventário PRO 2026")
 
-# === DASHBOARD ===
+st.sidebar.caption(
+    "TechClientes PRO 2026"
+)
+
+
+# ============================================================
+# DASHBOARD
+# ============================================================
+
 if menu == "Dashboard":
-    st.markdown(f"""
-        <div class="hero-container" style="background-image: url('{IMAGEM_HERO}');">
+
+    st.markdown(
+        f"""
+        <div class="hero-container"
+             style="background-image: url('{IMAGEM_HERO}');">
+
             <div class="hero-overlay"></div>
+
             <div class="hero-content">
-                <div class="hero-number">01.</div>
-                <div class="hero-title">Seu inventário.<br>Total controle.</div>
-                <div class="hero-text">
-                    Gerencie todos os seus equipamentos e ativos de TI em um só lugar.<br>
-                    Cadastre, consulte e acompanhe seu estoque de forma ágil e profissional.
+
+                <div class="hero-number">
+                    01.
                 </div>
-                <div class="hero-badge">CONTROLE INTELIGENTE</div>
+
+                <div class="hero-title">
+                    Seus clientes.<br>
+                    Total controle.
+                </div>
+
+                <div class="hero-text">
+                    Gerencie seus clientes em um só lugar.<br>
+                    Cadastre, consulte e mantenha suas informações
+                    organizadas de forma simples e profissional.
+                </div>
+
+                <div class="hero-badge">
+                    GESTÃO INTELIGENTE
+                </div>
+
             </div>
         </div>
-    """, unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True
+    )
 
-    st.markdown("""
-        <div class="page-title">Visão geral do inventário</div>
-        <div class="page-subtitle">Acompanhe seus ativos e mantenha o estoque atualizado.</div>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div class="page-title">
+            Visão geral dos clientes
+        </div>
 
-    total_itens = len(df)
-    valor_total = df["Valor"].sum()
-    qtd_total = df["Quantidade"].sum()
+        <div class="page-subtitle">
+            Acompanhe sua base de clientes e mantenha os cadastros atualizados.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Indicadores
+
+    total_clientes = len(df)
+
+    clientes_pf = len(
+        df[df["Tipo"].astype(str).str.upper() == "PESSOA FÍSICA"]
+    )
+
+    clientes_pj = len(
+        df[df["Tipo"].astype(str).str.upper() == "PESSOA JURÍDICA"]
+    )
 
     col1, col2, col3 = st.columns(3)
+
     with col1:
-        st.markdown(f"""
+
+        st.markdown(
+            f"""
             <div class="info-card">
-                <div class="card-number">{total_itens}</div>
-                <div class="card-label">ITENS CADASTRADOS</div>
+
+                <div class="card-number">
+                    {total_clientes}
+                </div>
+
+                <div class="card-label">
+                    CLIENTES CADASTRADOS
+                </div>
+
             </div>
-        """, unsafe_allow_html=True)
-    with col2:
-        st.markdown(f"""
-            <div class="info-card">
-                <div class="card-number">R$ {valor_total:,.2f}</div>
-                <div class="card-label">VALOR TOTAL DO ESTOQUE</div>
-            </div>
-        """, unsafe_allow_html=True)
-    with col3:
-        st.markdown(f"""
-            <div class="info-card">
-                <div class="card-number">{qtd_total:,.0f}</div>
-                <div class="card-label">QUANTIDADE TOTAL</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("<br>", unsafe_allow_html=True)
-    coluna1, coluna2 = st.columns([1.1, 1])
-    with coluna1:
-        st.markdown("""
-            <div class="dark-card">
-                <h2>Gestão Profissional</h2>
-                <p>O TechInventário PRO permite manter todos os equipamentos organizados e catalogados.</p>
-                <p>Monitore números de patrimônio, valores e quantidades com facilidade através de uma interface limpa.</p>
-            </div>
-        """, unsafe_allow_html=True)
-    with coluna2:
-        st.image(IMAGEM_FROTA, use_container_width=True)
-
-# === CADASTRAR ITEM ===
-elif menu == "+ Cadastrar Item":
-    st.markdown("""
-        <div class="page-title">Novo Equipamento</div>
-        <div class="page-subtitle">Adicione um novo ativo ao seu inventário.</div>
-    """, unsafe_allow_html=True)
-
-    with st.form("cadastro_item", clear_on_submit=True):
-        col1, col2 = st.columns(2)
-        with col1:
-            fabricante = st.text_input("Fabricante")
-            modelo = st.text_input("Modelo")
-            ano = st.number_input("Ano de Fabricação", min_value=1990, max_value=2035, value=2026, step=1)
-            categoria = st.selectbox("Categoria", ["Notebook", "Desktop", "Servidor", "Monitor", "Periférico", "Redes", "Outro"])
-        with col2:
-            patrimonio = st.text_input("Nº de Patrimônio / Série")
-            quantidade = st.number_input("Quantidade", min_value=1, value=1, step=1)
-            valor = st.number_input("Valor Unitário (R$)", min_value=0.0, value=0.0, step=100.0)
-            observacoes = st.text_area("Observações")
-
-        cadastrar = st.form_submit_button("CADASTRAR ITEM")
-
-        if cadastrar:
-            if fabricante.strip() and modelo.strip() and patrimonio.strip():
-                novo_item = pd.DataFrame([{
-                    "Fabricante": fabricante.strip(),
-                    "Modelo": modelo.strip(),
-                    "Ano": int(ano),
-                    "Categoria": categoria,
-                    "Patrimonio": patrimonio.strip().upper(),
-                    "Quantidade": int(quantidade),
-                    "Valor": float(valor),
-                    "Observacoes": observacoes.strip()
-                }])
-                df = pd.concat([df, novo_item], ignore_index=True)
-                salvar_dados(df)
-                st.success("Item cadastrado com sucesso!")
-                st.rerun()
-            else:
-                st.warning("Preencha Fabricante, Modelo e Patrimônio.")
-
-# === ITENS CADASTRADOS ===
-elif menu == "Itens Cadastrados":
-    st.markdown("""
-        <div class="page-title">Inventário Atual</div>
-        <div class="page-subtitle">Consulte e pesquise todos os equipamentos cadastrados.</div>
-    """, unsafe_allow_html=True)
-
-    if df.empty:
-        st.markdown("""
-            <div class="dark-card">
-                <h2>Nenhum item cadastrado</h2>
-                <p>Seu inventário ainda está vazio. Cadastre seu primeiro equipamento para começar.</p>
-            </div>
-        """, unsafe_allow_html=True)
-    else:
-        busca = st.text_input("Pesquisar item", placeholder="Digite fabricante, modelo, patrimônio ou categoria...")
-        if busca:
-            mascara = df.astype(str).apply(lambda coluna: coluna.str.contains(busca, case=False, na=False)).any(axis=1)
-            df_filtrado = df[mascara]
-        else:
-            df_filtrado = df
-
-        st.dataframe(df_filtrado, use_container_width=True, hide_index=True)
-        st.markdown("<br>", unsafe_allow_html=True)
-
-        opcoes_itens = df.index.tolist()
-        item_excluir = st.selectbox(
-            "Selecione um item para excluir",
-            options=opcoes_itens,
-            format_func=lambda indice: f"{df.loc[indice, 'Fabricante']} {df.loc[indice, 'Modelo']} - Patrimônio: {df.loc[indice, 'Patrimonio']}"
+            """,
+            unsafe_allow_html=True
         )
 
-        if st.button("EXCLUIR ITEM"):
-            df = df.drop(item_excluir).reset_index(drop=True)
+    with col2:
+
+        st.markdown(
+            f"""
+            <div class="info-card">
+
+                <div class="card-number">
+                    {clientes_pf}
+                </div>
+
+                <div class="card-label">
+                    PESSOAS FÍSICAS
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    with col3:
+
+        st.markdown(
+            f"""
+            <div class="info-card">
+
+                <div class="card-number">
+                    {clientes_pj}
+                </div>
+
+                <div class="card-label">
+                    PESSOAS JURÍDICAS
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    coluna1, coluna2 = st.columns([1.1, 1])
+
+    with coluna1:
+
+        st.markdown(
+            """
+            <div class="dark-card">
+
+                <h2>
+                    Gestão Profissional
+                </h2>
+
+                <p>
+                    O TechClientes PRO permite manter
+                    todos os seus clientes organizados
+                    em uma única plataforma.
+                </p>
+
+                <p>
+                    Consulte nomes, documentos, telefones,
+                    e-mails, endereços e demais informações
+                    com rapidez e praticidade.
+                </p>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    with coluna2:
+
+        st.image(
+            IMAGEM_CLIENTES,
+            use_container_width=True
+        )
+
+
+# ============================================================
+# CADASTRAR CLIENTE
+# ============================================================
+
+elif menu == "+ Cadastrar Cliente":
+
+    st.markdown(
+        """
+        <div class="page-title">
+            Novo Cliente
+        </div>
+
+        <div class="page-subtitle">
+            Adicione um novo cliente à sua base de dados.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    with st.form(
+        "cadastro_cliente",
+        clear_on_submit=True
+    ):
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+
+            nome = st.text_input(
+                "Nome / Razão Social"
+            )
+
+            cpf_cnpj = st.text_input(
+                "CPF / CNPJ"
+            )
+
+            telefone = st.text_input(
+                "Telefone / WhatsApp"
+            )
+
+            email = st.text_input(
+                "E-mail"
+            )
+
+        with col2:
+
+            cidade = st.text_input(
+                "Cidade"
+            )
+
+            endereco = st.text_input(
+                "Endereço"
+            )
+
+            tipo = st.selectbox(
+                "Tipo de Cliente",
+                [
+                    "Pessoa Física",
+                    "Pessoa Jurídica"
+                ]
+            )
+
+            observacoes = st.text_area(
+                "Observações"
+            )
+
+        cadastrar = st.form_submit_button(
+            "CADASTRAR CLIENTE"
+        )
+
+        if cadastrar:
+
+            if nome.strip():
+
+                novo_cliente = pd.DataFrame(
+                    [{
+                        "Nome": nome.strip(),
+                        "CPF_CNPJ": cpf_cnpj.strip(),
+                        "Telefone": telefone.strip(),
+                        "Email": email.strip(),
+                        "Cidade": cidade.strip(),
+                        "Endereco": endereco.strip(),
+                        "Tipo": tipo,
+                        "Observacoes": observacoes.strip()
+                    }]
+                )
+
+                df = pd.concat(
+                    [
+                        df,
+                        novo_cliente
+                    ],
+                    ignore_index=True
+                )
+
+                salvar_dados(df)
+
+                st.success(
+                    "Cliente cadastrado com sucesso!"
+                )
+
+                st.rerun()
+
+            else:
+
+                st.warning(
+                    "Preencha o nome do cliente."
+                )
+
+
+# ============================================================
+# CLIENTES CADASTRADOS
+# ============================================================
+
+elif menu == "Clientes Cadastrados":
+
+    st.markdown(
+        """
+        <div class="page-title">
+            Clientes Cadastrados
+        </div>
+
+        <div class="page-subtitle">
+            Consulte, pesquise e exclua clientes da sua base.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    if df.empty:
+
+        st.markdown(
+            """
+            <div class="dark-card">
+
+                <h2>
+                    Nenhum cliente cadastrado
+                </h2>
+
+                <p>
+                    Sua base de clientes ainda está vazia.
+                    Cadastre seu primeiro cliente para começar.
+                </p>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    else:
+
+        busca = st.text_input(
+            "Pesquisar cliente",
+            placeholder=(
+                "Digite nome, CPF/CNPJ, telefone, "
+                "e-mail, cidade ou tipo..."
+            )
+        )
+
+        if busca:
+
+            mascara = (
+                df.astype(str)
+                .apply(
+                    lambda coluna:
+                    coluna.str.contains(
+                        busca,
+                        case=False,
+                        na=False
+                    )
+                )
+                .any(axis=1)
+            )
+
+            df_filtrado = df[mascara]
+
+        else:
+
+            df_filtrado = df
+
+        st.dataframe(
+            df_filtrado,
+            use_container_width=True,
+            hide_index=True
+        )
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        opcoes_clientes = df.index.tolist()
+
+        cliente_excluir = st.selectbox(
+            "Selecione um cliente para excluir",
+
+            options=opcoes_clientes,
+
+            format_func=lambda indice:
+                f"{df.loc[indice, 'Nome']} "
+                f"- {df.loc[indice, 'CPF_CNPJ']}"
+        )
+
+        if st.button(
+            "EXCLUIR CLIENTE"
+        ):
+
+            df = (
+                df
+                .drop(cliente_excluir)
+                .reset_index(drop=True)
+            )
+
             salvar_dados(df)
-            st.success("Item excluído com sucesso!")
+
+            st.success(
+                "Cliente excluído com sucesso!"
+            )
+
             st.rerun()
 
-# === RODAPÉ ===
-st.markdown("""
+
+# ============================================================
+# RODAPÉ
+# ============================================================
+
+st.markdown(
+    """
     <div class="footer">
-        TechInventário PRO<br>
-        Gestão inteligente de ativos
+
+        TechClientes PRO<br>
+
+        Gestão inteligente de clientes
+
     </div>
-""", unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
