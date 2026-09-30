@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 # ============================================================
-# CONFIGURAÇÃO DA PÁGINA
+# CONFIGURAÇÃO
 # ============================================================
 
 st.set_page_config(
@@ -59,7 +59,9 @@ html, body, [class*="css"] {
     padding-bottom: 3rem;
 }
 
-/* SIDEBAR */
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
 
 [data-testid="stSidebar"] {
     background: linear-gradient(
@@ -88,7 +90,9 @@ html, body, [class*="css"] {
     letter-spacing: 1px;
 }
 
-/* TÍTULOS */
+/* =========================================================
+   TÍTULOS
+   ========================================================= */
 
 .page-title {
     font-size: 38px;
@@ -103,7 +107,9 @@ html, body, [class*="css"] {
     margin-bottom: 30px;
 }
 
-/* HERO */
+/* =========================================================
+   HERO
+   ========================================================= */
 
 .hero-container {
     position: relative;
@@ -120,13 +126,12 @@ html, body, [class*="css"] {
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background:
-        linear-gradient(
-            90deg,
-            rgba(14,28,38,0.97) 0%,
-            rgba(14,28,38,0.86) 45%,
-            rgba(14,28,38,0.18) 100%
-        );
+    background: linear-gradient(
+        90deg,
+        rgba(14,28,38,0.97) 0%,
+        rgba(14,28,38,0.86) 45%,
+        rgba(14,28,38,0.18) 100%
+    );
 }
 
 .hero-content {
@@ -170,7 +175,9 @@ html, body, [class*="css"] {
     font-weight: 700;
 }
 
-/* CARDS */
+/* =========================================================
+   CARDS
+   ========================================================= */
 
 .info-card {
     background: #FFFFFF;
@@ -195,7 +202,9 @@ html, body, [class*="css"] {
     margin-top: 5px;
 }
 
-/* CARD ESCURA */
+/* =========================================================
+   CARD ESCURA
+   ========================================================= */
 
 .dark-card {
     background: linear-gradient(
@@ -218,7 +227,9 @@ html, body, [class*="css"] {
     line-height: 1.7;
 }
 
-/* FORMULÁRIO */
+/* =========================================================
+   FORMULÁRIO
+   ========================================================= */
 
 [data-testid="stForm"] {
     background: rgba(255,255,255,0.85);
@@ -239,7 +250,6 @@ html, body, [class*="css"] {
 }
 
 .stTextInput input,
-.stNumberInput input,
 .stTextArea textarea {
     background-color: #FFFFFF !important;
     color: #202820 !important;
@@ -258,7 +268,9 @@ html, body, [class*="css"] {
     color: #FFFFFF !important;
 }
 
-/* BOTÕES */
+/* =========================================================
+   BOTÕES
+   ========================================================= */
 
 .stButton > button,
 div[data-testid="stFormSubmitButton"] > button {
@@ -276,7 +288,18 @@ div[data-testid="stFormSubmitButton"] > button {
     box-shadow: 0 8px 18px rgba(82,99,45,0.25);
 }
 
-/* FOOTER */
+/* =========================================================
+   TABELA
+   ========================================================= */
+
+[data-testid="stDataFrame"] {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+/* =========================================================
+   RODAPÉ
+   ========================================================= */
 
 .footer {
     margin-top: 50px;
@@ -288,6 +311,7 @@ div[data-testid="stFormSubmitButton"] > button {
 
 </style>
 """, unsafe_allow_html=True)
+
 
 # ============================================================
 # FUNÇÕES
@@ -309,7 +333,10 @@ def carregar_dados():
     if os.path.exists(ARQUIVO):
 
         try:
-            dados = pd.read_csv(ARQUIVO)
+            dados = pd.read_csv(
+                ARQUIVO,
+                encoding="utf-8-sig"
+            )
 
             for coluna in colunas:
                 if coluna not in dados.columns:
@@ -324,6 +351,7 @@ def carregar_dados():
 
 
 def salvar_dados(dados):
+
     dados.to_csv(
         ARQUIVO,
         index=False,
@@ -332,41 +360,23 @@ def salvar_dados(dados):
 
 
 # ============================================================
-# CARREGAR DADOS
+# CARREGAR CLIENTES
 # ============================================================
 
 df = carregar_dados()
-
-colunas_necessarias = [
-    "Nome",
-    "CPF_CNPJ",
-    "Telefone",
-    "Email",
-    "Cidade",
-    "Endereco",
-    "Tipo",
-    "Observacoes"
-]
-
-for coluna in colunas_necessarias:
-
-    if coluna not in df.columns:
-        df[coluna] = ""
 
 
 # ============================================================
 # SIDEBAR
 # ============================================================
 
-st.sidebar.markdown("""
-    <div class="logo-title">
-        TechClientes
-    </div>
-
-    <div class="logo-subtitle">
-        GESTÃO DE CLIENTES
-    </div>
-""", unsafe_allow_html=True)
+st.sidebar.markdown(
+    """
+<div class="logo-title">TechClientes</div>
+<div class="logo-subtitle">GESTÃO DE CLIENTES</div>
+""",
+    unsafe_allow_html=True
+)
 
 st.sidebar.markdown("<br>", unsafe_allow_html=True)
 
@@ -381,9 +391,7 @@ menu = st.sidebar.radio(
 
 st.sidebar.markdown("---")
 
-st.sidebar.caption(
-    "TechClientes PRO 2026"
-)
+st.sidebar.caption("TechClientes PRO 2026")
 
 
 # ============================================================
@@ -394,61 +402,67 @@ if menu == "Dashboard":
 
     st.markdown(
         f"""
-        <div class="hero-container"
-             style="background-image: url('{IMAGEM_HERO}');">
+<div class="hero-container" style="background-image: url('{IMAGEM_HERO}');">
 
-            <div class="hero-overlay"></div>
+    <div class="hero-overlay"></div>
 
-            <div class="hero-content">
+    <div class="hero-content">
 
-                <div class="hero-number">
-                    01.
-                </div>
+        <div class="hero-number">01.</div>
 
-                <div class="hero-title">
-                    Seus clientes.<br>
-                    Total controle.
-                </div>
-
-                <div class="hero-text">
-                    Gerencie seus clientes em um só lugar.<br>
-                    Cadastre, consulte e mantenha suas informações
-                    organizadas de forma simples e profissional.
-                </div>
-
-                <div class="hero-badge">
-                    GESTÃO INTELIGENTE
-                </div>
-
-            </div>
+        <div class="hero-title">
+            Seus clientes.<br>
+            Total controle.
         </div>
-        """,
+
+        <div class="hero-text">
+            Gerencie seus clientes em um só lugar.<br>
+            Cadastre, consulte e mantenha suas informações
+            organizadas de forma simples e profissional.
+        </div>
+
+        <div class="hero-badge">
+            GESTÃO INTELIGENTE
+        </div>
+
+    </div>
+
+</div>
+""",
         unsafe_allow_html=True
     )
 
     st.markdown(
         """
-        <div class="page-title">
-            Visão geral dos clientes
-        </div>
+<div class="page-title">
+    Visão geral dos clientes
+</div>
 
-        <div class="page-subtitle">
-            Acompanhe sua base de clientes e mantenha os cadastros atualizados.
-        </div>
-        """,
+<div class="page-subtitle">
+    Acompanhe sua base de clientes e mantenha os cadastros atualizados.
+</div>
+""",
         unsafe_allow_html=True
     )
 
-    # Indicadores
+    # --------------------------------------------------------
+    # INDICADORES
+    # --------------------------------------------------------
 
     total_clientes = len(df)
 
     clientes_pf = len(
-        df[df["Tipo"].astype(str).str.upper() == "PESSOA FÍSICA"]
+        df[
+            df["Tipo"].astype(str).str.upper()
+            == "PESSOA FÍSICA"
+        ]
     )
 
     clientes_pj = len(
-        df[df["Tipo"].astype(str).str.upper() == "PESSOA JURÍDICA"]
+        df[
+            df["Tipo"].astype(str).str.upper()
+            == "PESSOA JURÍDICA"
+        ]
     )
 
     col1, col2, col3 = st.columns(3)
@@ -457,18 +471,18 @@ if menu == "Dashboard":
 
         st.markdown(
             f"""
-            <div class="info-card">
+<div class="info-card">
 
-                <div class="card-number">
-                    {total_clientes}
-                </div>
+    <div class="card-number">
+        {total_clientes}
+    </div>
 
-                <div class="card-label">
-                    CLIENTES CADASTRADOS
-                </div>
+    <div class="card-label">
+        CLIENTES CADASTRADOS
+    </div>
 
-            </div>
-            """,
+</div>
+""",
             unsafe_allow_html=True
         )
 
@@ -476,18 +490,18 @@ if menu == "Dashboard":
 
         st.markdown(
             f"""
-            <div class="info-card">
+<div class="info-card">
 
-                <div class="card-number">
-                    {clientes_pf}
-                </div>
+    <div class="card-number">
+        {clientes_pf}
+    </div>
 
-                <div class="card-label">
-                    PESSOAS FÍSICAS
-                </div>
+    <div class="card-label">
+        PESSOAS FÍSICAS
+    </div>
 
-            </div>
-            """,
+</div>
+""",
             unsafe_allow_html=True
         )
 
@@ -495,20 +509,24 @@ if menu == "Dashboard":
 
         st.markdown(
             f"""
-            <div class="info-card">
+<div class="info-card">
 
-                <div class="card-number">
-                    {clientes_pj}
-                </div>
+    <div class="card-number">
+        {clientes_pj}
+    </div>
 
-                <div class="card-label">
-                    PESSOAS JURÍDICAS
-                </div>
+    <div class="card-label">
+        PESSOAS JURÍDICAS
+    </div>
 
-            </div>
-            """,
+</div>
+""",
             unsafe_allow_html=True
         )
+
+    # --------------------------------------------------------
+    # ÁREA INFORMATIVA
+    # --------------------------------------------------------
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -518,26 +536,24 @@ if menu == "Dashboard":
 
         st.markdown(
             """
-            <div class="dark-card">
+<div class="dark-card">
 
-                <h2>
-                    Gestão Profissional
-                </h2>
+    <h2>Gestão Profissional</h2>
 
-                <p>
-                    O TechClientes PRO permite manter
-                    todos os seus clientes organizados
-                    em uma única plataforma.
-                </p>
+    <p>
+        O TechClientes PRO permite manter
+        todos os seus clientes organizados
+        em uma única plataforma.
+    </p>
 
-                <p>
-                    Consulte nomes, documentos, telefones,
-                    e-mails, endereços e demais informações
-                    com rapidez e praticidade.
-                </p>
+    <p>
+        Consulte nomes, documentos, telefones,
+        e-mails, endereços e demais informações
+        com rapidez e praticidade.
+    </p>
 
-            </div>
-            """,
+</div>
+""",
             unsafe_allow_html=True
         )
 
@@ -557,14 +573,14 @@ elif menu == "+ Cadastrar Cliente":
 
     st.markdown(
         """
-        <div class="page-title">
-            Novo Cliente
-        </div>
+<div class="page-title">
+    Novo Cliente
+</div>
 
-        <div class="page-subtitle">
-            Adicione um novo cliente à sua base de dados.
-        </div>
-        """,
+<div class="page-subtitle">
+    Adicione um novo cliente à sua base de dados.
+</div>
+""",
         unsafe_allow_html=True
     )
 
@@ -621,7 +637,13 @@ elif menu == "+ Cadastrar Cliente":
 
         if cadastrar:
 
-            if nome.strip():
+            if not nome.strip():
+
+                st.warning(
+                    "Preencha o nome do cliente."
+                )
+
+            else:
 
                 novo_cliente = pd.DataFrame(
                     [{
@@ -652,12 +674,6 @@ elif menu == "+ Cadastrar Cliente":
 
                 st.rerun()
 
-            else:
-
-                st.warning(
-                    "Preencha o nome do cliente."
-                )
-
 
 # ============================================================
 # CLIENTES CADASTRADOS
@@ -667,14 +683,14 @@ elif menu == "Clientes Cadastrados":
 
     st.markdown(
         """
-        <div class="page-title">
-            Clientes Cadastrados
-        </div>
+<div class="page-title">
+    Clientes Cadastrados
+</div>
 
-        <div class="page-subtitle">
-            Consulte, pesquise e exclua clientes da sua base.
-        </div>
-        """,
+<div class="page-subtitle">
+    Consulte, pesquise e exclua clientes da sua base.
+</div>
+""",
         unsafe_allow_html=True
     )
 
@@ -682,19 +698,17 @@ elif menu == "Clientes Cadastrados":
 
         st.markdown(
             """
-            <div class="dark-card">
+<div class="dark-card">
 
-                <h2>
-                    Nenhum cliente cadastrado
-                </h2>
+    <h2>Nenhum cliente cadastrado</h2>
 
-                <p>
-                    Sua base de clientes ainda está vazia.
-                    Cadastre seu primeiro cliente para começar.
-                </p>
+    <p>
+        Sua base de clientes ainda está vazia.
+        Cadastre seu primeiro cliente para começar.
+    </p>
 
-            </div>
-            """,
+</div>
+""",
             unsafe_allow_html=True
         )
 
@@ -707,6 +721,10 @@ elif menu == "Clientes Cadastrados":
                 "e-mail, cidade ou tipo..."
             )
         )
+
+        # ----------------------------------------------------
+        # PESQUISA
+        # ----------------------------------------------------
 
         if busca:
 
@@ -737,25 +755,25 @@ elif menu == "Clientes Cadastrados":
 
         st.markdown("<br>", unsafe_allow_html=True)
 
+        # ----------------------------------------------------
+        # EXCLUSÃO
+        # ----------------------------------------------------
+
         opcoes_clientes = df.index.tolist()
 
         cliente_excluir = st.selectbox(
             "Selecione um cliente para excluir",
-
             options=opcoes_clientes,
-
             format_func=lambda indice:
                 f"{df.loc[indice, 'Nome']} "
                 f"- {df.loc[indice, 'CPF_CNPJ']}"
         )
 
-        if st.button(
-            "EXCLUIR CLIENTE"
-        ):
+        if st.button("EXCLUIR CLIENTE"):
 
             df = (
                 df
-                .drop(cliente_excluir)
+                .drop(index=cliente_excluir)
                 .reset_index(drop=True)
             )
 
@@ -774,13 +792,12 @@ elif menu == "Clientes Cadastrados":
 
 st.markdown(
     """
-    <div class="footer">
+<div class="footer">
 
-        TechClientes PRO<br>
+    TechClientes PRO<br>
+    Gestão inteligente de clientes
 
-        Gestão inteligente de clientes
-
-    </div>
-    """,
+</div>
+""",
     unsafe_allow_html=True
 )
