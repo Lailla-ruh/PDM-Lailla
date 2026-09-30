@@ -1,9 +1,10 @@
 import streamlit as st
 import pandas as pd
 import os
+import base64
 
 # ============================================================
-# CONFIGURAÇÃO
+# CONFIGURAÇÃO DA PÁGINA
 # ============================================================
 
 st.set_page_config(
@@ -16,20 +17,37 @@ st.set_page_config(
 ARQUIVO = "clientes.csv"
 
 # ============================================================
-# IMAGENS
+# CAMINHOS DAS IMAGENS
 # ============================================================
 
-IMAGEM_HERO = (
-    "https://images.unsplash.com/"
-    "photo-1556761175-b413da4baf72"
-    "?auto=format&fit=crop&w=1800&q=90"
+IMAGEM_HERO = os.path.join(
+    "imagens",
+    "hero.jpg"
 )
 
-IMAGEM_CLIENTES = (
-    "https://images.unsplash.com/"
-    "photo-1521737711867-e3b97375f902"
-    "?auto=format&fit=crop&w=1200&q=85"
+IMAGEM_CLIENTES = os.path.join(
+    "imagens",
+    "clientes.jpg"
 )
+
+# ============================================================
+# FUNÇÃO PARA CONVERTER IMAGEM EM BASE64
+# ============================================================
+
+def imagem_base64(caminho):
+
+    if not os.path.exists(caminho):
+        return None
+
+    try:
+        with open(caminho, "rb") as arquivo:
+            return base64.b64encode(
+                arquivo.read()
+            ).decode()
+
+    except Exception:
+        return None
+
 
 # ============================================================
 # CSS
@@ -40,9 +58,15 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
 
-html, body, [class*="css"] {
+html,
+body,
+[class*="css"] {
     font-family: 'Poppins', sans-serif;
 }
+
+/* ============================================================
+   FUNDO
+   ============================================================ */
 
 .stApp {
     background: linear-gradient(
@@ -59,9 +83,9 @@ html, body, [class*="css"] {
     padding-bottom: 3rem;
 }
 
-/* =========================================================
+/* ============================================================
    SIDEBAR
-   ========================================================= */
+   ============================================================ */
 
 [data-testid="stSidebar"] {
     background: linear-gradient(
@@ -69,6 +93,7 @@ html, body, [class*="css"] {
         #162630,
         #223944
     );
+
     border-right: 2px solid #77864B;
 }
 
@@ -90,9 +115,9 @@ html, body, [class*="css"] {
     letter-spacing: 1px;
 }
 
-/* =========================================================
+/* ============================================================
    TÍTULOS
-   ========================================================= */
+   ============================================================ */
 
 .page-title {
     font-size: 38px;
@@ -107,9 +132,9 @@ html, body, [class*="css"] {
     margin-bottom: 30px;
 }
 
-/* =========================================================
+/* ============================================================
    HERO
-   ========================================================= */
+   ============================================================ */
 
 .hero-container {
     position: relative;
@@ -118,14 +143,21 @@ html, body, [class*="css"] {
     border-radius: 28px;
     overflow: hidden;
     margin-bottom: 35px;
-    background-size: cover;
-    background-position: center;
     box-shadow: 0 15px 35px rgba(0,0,0,0.22);
+}
+
+.hero-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .hero-overlay {
     position: absolute;
     inset: 0;
+
     background: linear-gradient(
         90deg,
         rgba(14,28,38,0.97) 0%,
@@ -140,6 +172,7 @@ html, body, [class*="css"] {
     left: 7%;
     transform: translateY(-50%);
     max-width: 580px;
+    z-index: 2;
 }
 
 .hero-number {
@@ -175,17 +208,25 @@ html, body, [class*="css"] {
     font-weight: 700;
 }
 
-/* =========================================================
+/* ============================================================
    CARDS
-   ========================================================= */
+   ============================================================ */
 
 .info-card {
     background: #FFFFFF;
     border-radius: 22px;
     padding: 28px;
     min-height: 170px;
-    border: 1px solid rgba(111,128,63,0.30);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+
+    border: 1px solid rgba(
+        111,
+        128,
+        63,
+        0.30
+    );
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,0.08);
 }
 
 .card-number {
@@ -202,9 +243,9 @@ html, body, [class*="css"] {
     margin-top: 5px;
 }
 
-/* =========================================================
-   CARD ESCURA
-   ========================================================= */
+/* ============================================================
+   CARD ESCURO
+   ============================================================ */
 
 .dark-card {
     background: linear-gradient(
@@ -212,9 +253,12 @@ html, body, [class*="css"] {
         #152631,
         #233C48
     );
+
     border-radius: 24px;
     padding: 30px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.16);
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,0.16);
 }
 
 .dark-card h2 {
@@ -227,40 +271,85 @@ html, body, [class*="css"] {
     line-height: 1.7;
 }
 
-/* =========================================================
+/* ============================================================
+   IMAGEM SECUNDÁRIA
+   ============================================================ */
+
+.secondary-image {
+    width: 100%;
+    height: 100%;
+    min-height: 260px;
+    max-height: 330px;
+
+    object-fit: cover;
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,0.16);
+}
+
+/* ============================================================
    FORMULÁRIO
-   ========================================================= */
+   ============================================================ */
 
 [data-testid="stForm"] {
-    background: rgba(255,255,255,0.85);
+    background: rgba(
+        255,
+        255,
+        255,
+        0.88
+    );
+
     padding: 30px;
+
     border-radius: 25px;
+
     border: 1px solid #B8C391;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.08);
 }
 
 [data-testid="stWidgetLabel"] label,
 .stTextInput label,
-.stNumberInput label,
 .stSelectbox label,
 .stTextArea label {
     color: #26311F !important;
+
     font-size: 15px !important;
+
     font-weight: 700 !important;
 }
 
+/* ============================================================
+   INPUTS
+   ============================================================ */
+
 .stTextInput input,
 .stTextArea textarea {
+
     background-color: #FFFFFF !important;
+
     color: #202820 !important;
+
     border: 2px solid #7C8956 !important;
+
     border-radius: 12px !important;
+
     font-size: 16px !important;
 }
 
+/* ============================================================
+   SELECTBOX
+   ============================================================ */
+
 [data-baseweb="select"] > div {
+
     background-color: #2F323C !important;
+
     border: 2px solid #687548 !important;
+
     border-radius: 12px !important;
 }
 
@@ -268,12 +357,13 @@ html, body, [class*="css"] {
     color: #FFFFFF !important;
 }
 
-/* =========================================================
+/* ============================================================
    BOTÕES
-   ========================================================= */
+   ============================================================ */
 
 .stButton > button,
 div[data-testid="stFormSubmitButton"] > button {
+
     background: linear-gradient(
         135deg,
         #52632D,
@@ -281,32 +371,82 @@ div[data-testid="stFormSubmitButton"] > button {
     ) !important;
 
     color: #FFFFFF !important;
+
     border: none !important;
+
     border-radius: 14px !important;
+
     min-height: 54px;
+
     font-weight: 700 !important;
-    box-shadow: 0 8px 18px rgba(82,99,45,0.25);
+
+    box-shadow:
+        0 8px 18px rgba(
+            82,
+            99,
+            45,
+            0.25
+        );
 }
 
-/* =========================================================
-   TABELA
-   ========================================================= */
+.stButton > button:hover,
+div[data-testid="stFormSubmitButton"] > button:hover {
+
+    background: linear-gradient(
+        135deg,
+        #435323,
+        #687A3D
+    ) !important;
+}
+
+/* ============================================================
+   DATAFRAME
+   ============================================================ */
 
 [data-testid="stDataFrame"] {
     border-radius: 15px;
     overflow: hidden;
 }
 
-/* =========================================================
-   RODAPÉ
-   ========================================================= */
+/* ============================================================
+   FOOTER
+   ============================================================ */
 
 .footer {
+
     margin-top: 50px;
+
     text-align: center;
+
     color: #536044 !important;
+
     font-size: 14px;
+
     font-weight: 600;
+}
+
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+    .hero-container {
+        height: 500px;
+    }
+
+    .hero-title {
+        font-size: 36px;
+    }
+
+    .hero-number {
+        font-size: 55px;
+    }
+
+    .hero-content {
+        left: 6%;
+        right: 6%;
+    }
 }
 
 </style>
@@ -314,7 +454,7 @@ div[data-testid="stFormSubmitButton"] > button {
 
 
 # ============================================================
-# FUNÇÕES
+# FUNÇÕES DE DADOS
 # ============================================================
 
 def carregar_dados():
@@ -330,24 +470,32 @@ def carregar_dados():
         "Observacoes"
     ]
 
-    if os.path.exists(ARQUIVO):
+    if not os.path.exists(ARQUIVO):
 
-        try:
-            dados = pd.read_csv(
-                ARQUIVO,
-                encoding="utf-8-sig"
-            )
+        return pd.DataFrame(
+            columns=colunas
+        )
 
-            for coluna in colunas:
-                if coluna not in dados.columns:
-                    dados[coluna] = ""
+    try:
 
-            return dados[colunas]
+        dados = pd.read_csv(
+            ARQUIVO,
+            encoding="utf-8-sig"
+        )
 
-        except Exception:
-            return pd.DataFrame(columns=colunas)
+    except Exception:
 
-    return pd.DataFrame(columns=colunas)
+        return pd.DataFrame(
+            columns=colunas
+        )
+
+    for coluna in colunas:
+
+        if coluna not in dados.columns:
+
+            dados[coluna] = ""
+
+    return dados[colunas]
 
 
 def salvar_dados(dados):
@@ -372,13 +520,21 @@ df = carregar_dados()
 
 st.sidebar.markdown(
     """
-<div class="logo-title">TechClientes</div>
-<div class="logo-subtitle">GESTÃO DE CLIENTES</div>
+<div class="logo-title">
+    TechClientes
+</div>
+
+<div class="logo-subtitle">
+    GESTÃO DE CLIENTES
+</div>
 """,
     unsafe_allow_html=True
 )
 
-st.sidebar.markdown("<br>", unsafe_allow_html=True)
+st.sidebar.markdown(
+    "<br>",
+    unsafe_allow_html=True
+)
 
 menu = st.sidebar.radio(
     "NAVEGAÇÃO",
@@ -391,7 +547,9 @@ menu = st.sidebar.radio(
 
 st.sidebar.markdown("---")
 
-st.sidebar.caption("TechClientes PRO 2026")
+st.sidebar.caption(
+    "TechClientes PRO 2026"
+)
 
 
 # ============================================================
@@ -400,15 +558,32 @@ st.sidebar.caption("TechClientes PRO 2026")
 
 if menu == "Dashboard":
 
-    st.markdown(
-        f"""
-<div class="hero-container" style="background-image: url('{IMAGEM_HERO}');">
+    # --------------------------------------------------------
+    # IMAGEM HERO
+    # --------------------------------------------------------
+
+    hero_base64 = imagem_base64(
+        IMAGEM_HERO
+    )
+
+    if hero_base64:
+
+        st.markdown(
+            f"""
+<div class="hero-container">
+
+    <img
+        class="hero-image"
+        src="data:image/jpeg;base64,{hero_base64}"
+    >
 
     <div class="hero-overlay"></div>
 
     <div class="hero-content">
 
-        <div class="hero-number">01.</div>
+        <div class="hero-number">
+            01.
+        </div>
 
         <div class="hero-title">
             Seus clientes.<br>
@@ -429,8 +604,61 @@ if menu == "Dashboard":
 
 </div>
 """,
-        unsafe_allow_html=True
-    )
+            unsafe_allow_html=True
+        )
+
+    else:
+
+        # Caso a imagem não exista,
+        # mostra um Hero sem imagem.
+
+        st.markdown(
+            """
+<div class="hero-container"
+     style="
+     background:
+     linear-gradient(
+        135deg,
+        #162630,
+        #314A35
+     );
+     ">
+
+    <div class="hero-content">
+
+        <div class="hero-number">
+            01.
+        </div>
+
+        <div class="hero-title">
+            Seus clientes.<br>
+            Total controle.
+        </div>
+
+        <div class="hero-text">
+            Gerencie seus clientes em um só lugar.<br>
+            Cadastre, consulte e mantenha suas informações
+            organizadas de forma simples e profissional.
+        </div>
+
+        <div class="hero-badge">
+            GESTÃO INTELIGENTE
+        </div>
+
+    </div>
+
+</div>
+""",
+            unsafe_allow_html=True
+        )
+
+        st.warning(
+            "Coloque a imagem hero.jpg dentro da pasta imagens."
+        )
+
+    # --------------------------------------------------------
+    # TÍTULO
+    # --------------------------------------------------------
 
     st.markdown(
         """
@@ -453,14 +681,20 @@ if menu == "Dashboard":
 
     clientes_pf = len(
         df[
-            df["Tipo"].astype(str).str.upper()
+            df["Tipo"]
+            .astype(str)
+            .str.upper()
+            .str.strip()
             == "PESSOA FÍSICA"
         ]
     )
 
     clientes_pj = len(
         df[
-            df["Tipo"].astype(str).str.upper()
+            df["Tipo"]
+            .astype(str)
+            .str.upper()
+            .str.strip()
             == "PESSOA JURÍDICA"
         ]
     )
@@ -528,9 +762,14 @@ if menu == "Dashboard":
     # ÁREA INFORMATIVA
     # --------------------------------------------------------
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown(
+        "<br>",
+        unsafe_allow_html=True
+    )
 
-    coluna1, coluna2 = st.columns([1.1, 1])
+    coluna1, coluna2 = st.columns(
+        [1.1, 1]
+    )
 
     with coluna1:
 
@@ -538,7 +777,9 @@ if menu == "Dashboard":
             """
 <div class="dark-card">
 
-    <h2>Gestão Profissional</h2>
+    <h2>
+        Gestão Profissional
+    </h2>
 
     <p>
         O TechClientes PRO permite manter
@@ -559,10 +800,41 @@ if menu == "Dashboard":
 
     with coluna2:
 
-        st.image(
-            IMAGEM_CLIENTES,
-            use_container_width=True
+        imagem_clientes_base64 = imagem_base64(
+            IMAGEM_CLIENTES
         )
+
+        if imagem_clientes_base64:
+
+            st.markdown(
+                f"""
+<img
+    class="secondary-image"
+    src="data:image/jpeg;base64,{imagem_clientes_base64}"
+>
+""",
+                unsafe_allow_html=True
+            )
+
+        else:
+
+            st.markdown(
+                """
+<div class="dark-card">
+
+    <h2>
+        Clientes
+    </h2>
+
+    <p>
+        Coloque a imagem clientes.jpg
+        dentro da pasta imagens.
+    </p>
+
+</div>
+""",
+                unsafe_allow_html=True
+            )
 
 
 # ============================================================
@@ -591,32 +863,46 @@ elif menu == "+ Cadastrar Cliente":
 
         col1, col2 = st.columns(2)
 
+        # ----------------------------------------------------
+        # COLUNA 1
+        # ----------------------------------------------------
+
         with col1:
 
             nome = st.text_input(
-                "Nome / Razão Social"
+                "Nome / Razão Social",
+                placeholder="Digite o nome do cliente"
             )
 
             cpf_cnpj = st.text_input(
-                "CPF / CNPJ"
+                "CPF / CNPJ",
+                placeholder="Digite o CPF ou CNPJ"
             )
 
             telefone = st.text_input(
-                "Telefone / WhatsApp"
+                "Telefone / WhatsApp",
+                placeholder="(00) 00000-0000"
             )
 
             email = st.text_input(
-                "E-mail"
+                "E-mail",
+                placeholder="cliente@email.com"
             )
+
+        # ----------------------------------------------------
+        # COLUNA 2
+        # ----------------------------------------------------
 
         with col2:
 
             cidade = st.text_input(
-                "Cidade"
+                "Cidade",
+                placeholder="Digite a cidade"
             )
 
             endereco = st.text_input(
-                "Endereço"
+                "Endereço",
+                placeholder="Rua, número, bairro..."
             )
 
             tipo = st.selectbox(
@@ -628,12 +914,21 @@ elif menu == "+ Cadastrar Cliente":
             )
 
             observacoes = st.text_area(
-                "Observações"
+                "Observações",
+                placeholder="Digite alguma observação..."
             )
+
+        # ----------------------------------------------------
+        # BOTÃO
+        # ----------------------------------------------------
 
         cadastrar = st.form_submit_button(
             "CADASTRAR CLIENTE"
         )
+
+        # ----------------------------------------------------
+        # PROCESSAMENTO
+        # ----------------------------------------------------
 
         if cadastrar:
 
@@ -646,16 +941,32 @@ elif menu == "+ Cadastrar Cliente":
             else:
 
                 novo_cliente = pd.DataFrame(
-                    [{
-                        "Nome": nome.strip(),
-                        "CPF_CNPJ": cpf_cnpj.strip(),
-                        "Telefone": telefone.strip(),
-                        "Email": email.strip(),
-                        "Cidade": cidade.strip(),
-                        "Endereco": endereco.strip(),
-                        "Tipo": tipo,
-                        "Observacoes": observacoes.strip()
-                    }]
+                    [
+                        {
+                            "Nome": nome.strip(),
+
+                            "CPF_CNPJ":
+                                cpf_cnpj.strip(),
+
+                            "Telefone":
+                                telefone.strip(),
+
+                            "Email":
+                                email.strip(),
+
+                            "Cidade":
+                                cidade.strip(),
+
+                            "Endereco":
+                                endereco.strip(),
+
+                            "Tipo":
+                                tipo,
+
+                            "Observacoes":
+                                observacoes.strip()
+                        }
+                    ]
                 )
 
                 df = pd.concat(
@@ -694,13 +1005,19 @@ elif menu == "Clientes Cadastrados":
         unsafe_allow_html=True
     )
 
+    # --------------------------------------------------------
+    # NENHUM CLIENTE
+    # --------------------------------------------------------
+
     if df.empty:
 
         st.markdown(
             """
 <div class="dark-card">
 
-    <h2>Nenhum cliente cadastrado</h2>
+    <h2>
+        Nenhum cliente cadastrado
+    </h2>
 
     <p>
         Sua base de clientes ainda está vazia.
@@ -711,6 +1028,10 @@ elif menu == "Clientes Cadastrados":
 """,
             unsafe_allow_html=True
         )
+
+    # --------------------------------------------------------
+    # EXISTEM CLIENTES
+    # --------------------------------------------------------
 
     else:
 
@@ -723,19 +1044,22 @@ elif menu == "Clientes Cadastrados":
         )
 
         # ----------------------------------------------------
-        # PESQUISA
+        # FILTRO
         # ----------------------------------------------------
 
-        if busca:
+        if busca.strip():
+
+            texto_busca = busca.strip()
 
             mascara = (
                 df.astype(str)
                 .apply(
                     lambda coluna:
                     coluna.str.contains(
-                        busca,
+                        texto_busca,
                         case=False,
-                        na=False
+                        na=False,
+                        regex=False
                     )
                 )
                 .any(axis=1)
@@ -747,13 +1071,30 @@ elif menu == "Clientes Cadastrados":
 
             df_filtrado = df
 
+        # ----------------------------------------------------
+        # RESULTADO
+        # ----------------------------------------------------
+
         st.dataframe(
             df_filtrado,
             use_container_width=True,
-            hide_index=True
+            hide_index=True,
+            column_config={
+                "Nome": "Nome / Razão Social",
+                "CPF_CNPJ": "CPF / CNPJ",
+                "Telefone": "Telefone",
+                "Email": "E-mail",
+                "Cidade": "Cidade",
+                "Endereco": "Endereço",
+                "Tipo": "Tipo",
+                "Observacoes": "Observações"
+            }
         )
 
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown(
+            "<br>",
+            unsafe_allow_html=True
+        )
 
         # ----------------------------------------------------
         # EXCLUSÃO
@@ -763,18 +1104,29 @@ elif menu == "Clientes Cadastrados":
 
         cliente_excluir = st.selectbox(
             "Selecione um cliente para excluir",
+
             options=opcoes_clientes,
+
             format_func=lambda indice:
-                f"{df.loc[indice, 'Nome']} "
-                f"- {df.loc[indice, 'CPF_CNPJ']}"
+                (
+                    f"{df.loc[indice, 'Nome']} "
+                    f"- "
+                    f"{df.loc[indice, 'CPF_CNPJ']}"
+                )
         )
 
-        if st.button("EXCLUIR CLIENTE"):
+        if st.button(
+            "EXCLUIR CLIENTE"
+        ):
 
             df = (
                 df
-                .drop(index=cliente_excluir)
-                .reset_index(drop=True)
+                .drop(
+                    index=cliente_excluir
+                )
+                .reset_index(
+                    drop=True
+                )
             )
 
             salvar_dados(df)
@@ -795,6 +1147,7 @@ st.markdown(
 <div class="footer">
 
     TechClientes PRO<br>
+
     Gestão inteligente de clientes
 
 </div>
