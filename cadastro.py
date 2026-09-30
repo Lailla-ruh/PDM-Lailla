@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import os
-from textwrap import dedent
 
 # === CONFIGURAÇÃO DA PÁGINA ===
 st.set_page_config(
@@ -243,9 +242,7 @@ div[data-testid="stFormSubmitButton"] > button {
 """, unsafe_allow_html=True)
 
 
-# ============================================================
-# FUNÇÕES
-# ============================================================
+# === FUNÇÕES ===
 
 def carregar_dados():
 
@@ -263,7 +260,6 @@ def carregar_dados():
     if os.path.exists(ARQUIVO):
 
         try:
-
             dados = pd.read_csv(
                 ARQUIVO,
                 encoding="utf-8-sig"
@@ -278,13 +274,9 @@ def carregar_dados():
 
         except Exception:
 
-            return pd.DataFrame(
-                columns=colunas
-            )
+            return pd.DataFrame(columns=colunas)
 
-    return pd.DataFrame(
-        columns=colunas
-    )
+    return pd.DataFrame(columns=colunas)
 
 
 def salvar_dados(dados):
@@ -296,9 +288,7 @@ def salvar_dados(dados):
     )
 
 
-# ============================================================
-# CARREGAR DADOS
-# ============================================================
+# === CARREGAR DADOS ===
 
 df = carregar_dados()
 
@@ -319,20 +309,13 @@ for coluna in colunas_necessarias:
         df[coluna] = ""
 
 
-# ============================================================
-# SIDEBAR
-# ============================================================
+# === SIDEBAR ===
 
 st.sidebar.markdown(
-    dedent("""
-    <div class="logo-title">
-        TechClientes
-    </div>
-
-    <div class="logo-subtitle">
-        GESTÃO DE CLIENTES
-    </div>
-    """),
+    """
+    <div class="logo-title">TechClientes</div>
+    <div class="logo-subtitle">GESTÃO DE CLIENTES</div>
+    """,
     unsafe_allow_html=True
 )
 
@@ -348,10 +331,7 @@ menu = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
-
-st.sidebar.caption(
-    "TechClientes PRO 2026"
-)
+st.sidebar.caption("TechClientes PRO 2026")
 
 
 # ============================================================
@@ -360,9 +340,10 @@ st.sidebar.caption(
 
 if menu == "Dashboard":
 
-    # HERO
-    st.markdown(
-        dedent(f"""
+    # === HERO ===
+
+    st.html(
+        f"""
         <div class="hero-container"
              style="background-image: url('{IMAGEM_HERO}');">
 
@@ -370,9 +351,7 @@ if menu == "Dashboard":
 
             <div class="hero-content">
 
-                <div class="hero-number">
-                    01.
-                </div>
+                <div class="hero-number">01.</div>
 
                 <div class="hero-title">
                     Seus clientes.<br>
@@ -392,13 +371,13 @@ if menu == "Dashboard":
             </div>
 
         </div>
-        """),
-        unsafe_allow_html=True
+        """
     )
 
-    # TÍTULO
-    st.markdown(
-        dedent("""
+    # === TÍTULO ===
+
+    st.html(
+        """
         <div class="page-title">
             Visão geral dos clientes
         </div>
@@ -406,11 +385,11 @@ if menu == "Dashboard":
         <div class="page-subtitle">
             Acompanhe sua base de clientes e mantenha os cadastros atualizados.
         </div>
-        """),
-        unsafe_allow_html=True
+        """
     )
 
-    # INDICADORES
+    # === INDICADORES ===
+
     total_clientes = len(df)
 
     clientes_pf = len(
@@ -437,10 +416,9 @@ if menu == "Dashboard":
 
     with col1:
 
-        st.markdown(
-            dedent(f"""
+        st.html(
+            f"""
             <div class="info-card">
-
                 <div class="card-number">
                     {total_clientes}
                 </div>
@@ -448,18 +426,15 @@ if menu == "Dashboard":
                 <div class="card-label">
                     CLIENTES CADASTRADOS
                 </div>
-
             </div>
-            """),
-            unsafe_allow_html=True
+            """
         )
 
     with col2:
 
-        st.markdown(
-            dedent(f"""
+        st.html(
+            f"""
             <div class="info-card">
-
                 <div class="card-number">
                     {clientes_pf}
                 </div>
@@ -467,18 +442,15 @@ if menu == "Dashboard":
                 <div class="card-label">
                     PESSOAS FÍSICAS
                 </div>
-
             </div>
-            """),
-            unsafe_allow_html=True
+            """
         )
 
     with col3:
 
-        st.markdown(
-            dedent(f"""
+        st.html(
+            f"""
             <div class="info-card">
-
                 <div class="card-number">
                     {clientes_pj}
                 </div>
@@ -486,26 +458,20 @@ if menu == "Dashboard":
                 <div class="card-label">
                     PESSOAS JURÍDICAS
                 </div>
-
             </div>
-            """),
-            unsafe_allow_html=True
+            """
         )
 
-    # ÁREA INFORMATIVA
-    st.markdown(
-        "<br>",
-        unsafe_allow_html=True
-    )
+    # === ÁREA INFORMATIVA ===
 
-    coluna1, coluna2 = st.columns(
-        [1.1, 1]
-    )
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    coluna1, coluna2 = st.columns([1.1, 1])
 
     with coluna1:
 
-        st.markdown(
-            dedent("""
+        st.html(
+            """
             <div class="dark-card">
 
                 <h2>
@@ -525,8 +491,7 @@ if menu == "Dashboard":
                 </p>
 
             </div>
-            """),
-            unsafe_allow_html=True
+            """
         )
 
     with coluna2:
@@ -543,8 +508,8 @@ if menu == "Dashboard":
 
 elif menu == "+ Cadastrar Cliente":
 
-    st.markdown(
-        dedent("""
+    st.html(
+        """
         <div class="page-title">
             Novo Cliente
         </div>
@@ -552,8 +517,7 @@ elif menu == "+ Cadastrar Cliente":
         <div class="page-subtitle">
             Adicione um novo cliente à sua base de dados.
         </div>
-        """),
-        unsafe_allow_html=True
+        """
     )
 
     with st.form(
@@ -657,8 +621,8 @@ elif menu == "+ Cadastrar Cliente":
 
 elif menu == "Clientes Cadastrados":
 
-    st.markdown(
-        dedent("""
+    st.html(
+        """
         <div class="page-title">
             Clientes Cadastrados
         </div>
@@ -666,14 +630,13 @@ elif menu == "Clientes Cadastrados":
         <div class="page-subtitle">
             Consulte e pesquise todos os clientes cadastrados.
         </div>
-        """),
-        unsafe_allow_html=True
+        """
     )
 
     if df.empty:
 
-        st.markdown(
-            dedent("""
+        st.html(
+            """
             <div class="dark-card">
 
                 <h2>
@@ -686,8 +649,7 @@ elif menu == "Clientes Cadastrados":
                 </p>
 
             </div>
-            """),
-            unsafe_allow_html=True
+            """
         )
 
     else:
@@ -737,9 +699,7 @@ elif menu == "Clientes Cadastrados":
 
         cliente_excluir = st.selectbox(
             "Selecione um cliente para excluir",
-
             options=opcoes_clientes,
-
             format_func=lambda indice:
                 f"{df.loc[indice, 'Nome']} - "
                 f"CPF/CNPJ: "
@@ -765,18 +725,13 @@ elif menu == "Clientes Cadastrados":
             st.rerun()
 
 
-# ============================================================
-# RODAPÉ
-# ============================================================
+# === RODAPÉ ===
 
-st.markdown(
-    dedent("""
+st.html(
+    """
     <div class="footer">
-
         TechClientes PRO<br>
         Gestão inteligente de clientes
-
     </div>
-    """),
-    unsafe_allow_html=True
+    """
 )
